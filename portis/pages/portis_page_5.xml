@@ -4,9 +4,9 @@
         <text>page: {$page}</text>
     </row>
     <column>
-        <text>voice in channel: {$vox_in_ch}</text>
-        <text>voice out channel: {$vox_out_ch}</text>
-        <text>organ out channel: {$organ_out_ch}</text>
-        <text>bells out channel: {$bells_out_ch}</text>
+        <text>voice in channel: {$vox-in-ch}</text>
+        <text>voice out channel: {$vox-out-ch}</text>
+        <text>organ out channel: {$organ-out-ch}</text>
+        <text>bells out channel: {$bells-out-ch}</text>
     </column>
 </view>
