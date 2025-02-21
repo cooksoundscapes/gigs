@@ -1,0 +1,12 @@
+<view title="portis_page_1">
+    <row ratio="20">
+        <text>PortisGIG</text>
+        <text>page: {$page}</text>
+    </row>
+    <column>
+        <text>organ vol: {$organ}dB</text>
+        <text>bells vol: {$bells}dB</text>
+        <text>voice vol: {$vox}dB</text>
+        <text>organ hp Cutoff: {$wvtbl-hpf}Hz</text>
+    </column>
+</view>

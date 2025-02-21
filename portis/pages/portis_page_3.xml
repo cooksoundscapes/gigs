@@ -1,0 +1,11 @@
+<view title="portis_page_3">
+    <row ratio="20">
+        <text>PortisGIG</text>
+        <text>page: {$page}</text>
+    </row>
+    <column>
+        <text>organ vibrato: {$wvtbl-vib-mix}%</text>
+        <text>vibrato rate: {$wvtbl-vib-rate}Hz</text>
+        <text>vibrato strength: {$wvtbl-vib-range}ms</text>
+    </column>
+</view>

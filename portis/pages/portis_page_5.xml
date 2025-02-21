@@ -1,0 +1,12 @@
+<view title="portis_page_5">
+    <row ratio="20">
+        <text>PortisGIG</text>
+        <text>page: {$page}</text>
+    </row>
+    <column>
+        <text>voice in channel: {$vox_in_ch}</text>
+        <text>voice out channel: {$vox_out_ch}</text>
+        <text>organ out channel: {$organ_out_ch}</text>
+        <text>bells out channel: {$bells_out_ch}</text>
+    </column>
+</view>
