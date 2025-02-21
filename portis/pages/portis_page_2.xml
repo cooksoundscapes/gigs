@@ -6,7 +6,7 @@
     <column>
         <text>organ drive: {$wvtbl-drive}dB</text>
         <text>organ lp cutoff: {$wvtbl-lpf}Hz</text>
-        <text>organ reverb: {$vtbl-verb}dB</text>
+        <text>organ reverb: {$wvtbl-verb}dB</text>
         <text>bells lp cutoff: {$smp-synth-lpf}Hz</text>
     </column>
 </view>

@@ -23,10 +23,10 @@ local instruments = {
             {"vox_fx", "overdrive"}
         },
         {
-            {"mixer", "vox-in-ch"},
-            {"mixer", "vox-out-ch"},
-            {"mixer", "organ-out-ch"},
-            {"mixer", "bells-out-ch"}
+            {"mixer", "vox_in_ch"},
+            {"mixer", "vox_out_ch"},
+            {"mixer", "organ_out_ch"},
+            {"mixer", "bells_out_ch"}
         },
     },
     mixer={
