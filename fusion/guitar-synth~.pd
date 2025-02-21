@@ -1,7 +1,7 @@
-#N canvas 718 468 644 330 12;
+#N canvas 719 504 644 330 12;
 #X obj 32 115 inlet~;
 #X obj 32 170 clone 6 partial-voice~;
-#N canvas 738 471 450 300 reblock 0;
+#N canvas 739 507 450 300 reblock 1;
 #X obj 20 57 inlet~;
 #X obj 20 160 outlet;
 #X obj 20 100 sigmund~ -npts 4096 -hop 1024 -npeak 6 tracks, f 29;
