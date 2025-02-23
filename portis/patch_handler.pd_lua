@@ -95,7 +95,6 @@ function patch_handler:handle_nav_buttons(atoms)
 
     -- ignorar home button
     if atoms[1] ~= 1 then
-        print(atoms[1], atoms[2])
         local btn = tonumber(atoms[1])
         local pressed = atoms[2] == 1
 
