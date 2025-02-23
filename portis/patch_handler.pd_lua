@@ -27,7 +27,7 @@ function patch_handler:initialize()
         ["nav-buttons"]=function(atoms) self:handle_nav_buttons(atoms) end
     }
     self.inlets = 1
-    self.outlets = 2
+    self.outlets = 1
     self.current_page = 1
     self.at_home_screen = true
 
@@ -73,13 +73,13 @@ function patch_handler:handle_encoders(atoms)
             pd.send("observer", "list", {param_ref[1], param_ref[2], send_value})
         end
 
-        --manda no outlet 1 para send-osc (param)
+        --manda no outlet 1 para send-osc (param) e concatena com param.path, exemplo:
+        -- param.send = wvtbl-vib, param.path = rate, osc_send = wvtbl-vib-rate
         local osc_send = param.send
         if param.path then
             osc_send = osc_send .. "-" .. param.path
         end
         self:send_param_to_ui(osc_send, param.level)
-        self:outlet(1, osc_send , {param.level})
     end
 end
 
@@ -107,7 +107,8 @@ function patch_handler:handle_nav_buttons(atoms)
             self:send_param_to_ui("page", self.current_page)
         elseif btn == 1 and not self.at_home_screen then -- navigate to home
             self.at_home_screen = true
-            self:outlet(2, "home", {})
+        else
+            pd.send("nav-buttons", "list", {tonumber(atoms[1]), atoms[2]})
         end
     end
 end

@@ -1,6 +1,6 @@
-#N canvas 780 600 470 337 12;
+#N canvas 734 463 470 419 12;
 #X obj 62 13 inlet~;
-#X obj 100 292 outlet~;
+#X obj 62 300 outlet~;
 #X obj 97 68 delwrite~ \$0dly 2000;
 #X obj 159 177 delread4~ \$0dly;
 #X obj 324 174 atoms/limit~ 94 8;

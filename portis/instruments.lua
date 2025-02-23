@@ -150,14 +150,14 @@ local instruments = {
             level=20,
             min=10,
             max=21000.0,
-            res=17.5,
+            res=170.5,
             send="vox-hpf"
         },
         lpf_cutoff={
             level=21000,
             min=10,
             max=21000.0,
-            res=17.5,
+            res=170.5,
             send="vox-lpf"
         },
         overdrive={
