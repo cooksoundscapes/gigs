@@ -5,8 +5,8 @@
     </row>
     <column>
         <text>organ drive: {$wvtbl-drive}dB</text>
-        <text>organ lp cutoff: {$wvtbl-lpf}Hz</text>
-        <text>organ reverb: {$wvtbl-verb}dB</text>
-        <text>bells lp cutoff: {$smp-synth-lpf}Hz</text>
+        <text>organ hpf: {$wvtbl-hpf}Hz</text>
+        <text>organ lpf: {$wvtbl-lpf}Hz</text>
+        <text>bells lpf: {$smp-synth-lpf}Hz</text>
     </column>
 </view>

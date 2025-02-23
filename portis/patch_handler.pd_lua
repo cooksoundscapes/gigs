@@ -24,7 +24,8 @@ function patch_handler:initialize()
     self.actions = {
         ["encoders"]=function(atoms) self:handle_encoders(atoms) end,
         ["seq-buttons"]=function(atoms) self:handle_seq_buttons(atoms) end,
-        ["nav-buttons"]=function(atoms) self:handle_nav_buttons(atoms) end
+        ["nav-buttons"]=function(atoms) self:handle_nav_buttons(atoms) end,
+        ["system"]=function(atoms) self:handle_system_msg(atoms) end
     }
     self.inlets = 1
     self.outlets = 1
@@ -88,28 +89,35 @@ function patch_handler:handle_seq_buttons(atoms)
 end
 
 function patch_handler:handle_nav_buttons(atoms)
-    local btn = tonumber(atoms[1])
-    local pressed = atoms[2] == 1
+    if self.at_home_screen then
+        return
+    end
 
-    if pressed then
-        if self.at_home_screen then
-            self.at_home_screen = false
-            return
-        end
+    -- ignorar home button
+    if atoms[1] ~= 1 then
+        print(atoms[1], atoms[2])
+        local btn = tonumber(atoms[1])
+        local pressed = atoms[2] == 1
 
-        if btn == 3 then
-            self.current_page = math.min(self.current_page + 1, #self.instruments.pages)
-            pd.send("current-page", "float", {self.current_page})
-            self:send_param_to_ui("page", self.current_page)
-        elseif btn == 2 then
-            self.current_page = math.max(self.current_page - 1, 1)
-            pd.send("current-page", "float", {self.current_page})
-            self:send_param_to_ui("page", self.current_page)
-        elseif btn == 1 and not self.at_home_screen then -- navigate to home
-            self.at_home_screen = true
-        else
-            pd.send("nav-buttons", "list", {tonumber(atoms[1]), atoms[2]})
+        if pressed then
+            if btn == 3 then
+                self.current_page = math.min(self.current_page + 1, #self.instruments.pages)
+                pd.send("current-page", "float", {self.current_page})
+                self:send_param_to_ui("page", self.current_page)
+            elseif btn == 2 then
+                self.current_page = math.max(self.current_page - 1, 1)
+                pd.send("current-page", "float", {self.current_page})
+                self:send_param_to_ui("page", self.current_page)
+            end
         end
+        pd.send("nav-buttons", "list", {tonumber(atoms[1]), atoms[2]})
+    end
+end
+
+function patch_handler:handle_system_msg(atoms)
+    if atoms[1] == "at_home" then
+        self.at_home_screen = atoms[2] == 1
+        pd.post(string.format("at home ? %s", self.at_home_screen))
     end
 end
 

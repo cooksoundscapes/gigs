@@ -4,29 +4,12 @@ local instruments = {
             {"organ", "vol"},
             {"bells", "vol"},
             {"vox_fx", "vol"},
-            {"organ", "hpf_cutoff"}
         },
         {
             {"organ", "overdrive"},
+            {"organ", "hpf_cutoff"},
             {"organ", "lpf_cutoff"},
-            {"organ", "reverb"},
             {"bells", "lpf_cutoff"}
-        },
-        {
-            {"organ", "vibrato_mix"},
-            {"organ", "vibrato_rate"},
-            {"organ", "vibrato_range"}
-        },
-        {
-            {"vox_fx", "hpf_cutoff"},
-            {"vox_fx", "lpf_cutoff"},
-            {"vox_fx", "overdrive"}
-        },
-        {
-            {"mixer", "vox_in_ch"},
-            {"mixer", "vox_out_ch"},
-            {"mixer", "organ_out_ch"},
-            {"mixer", "bells_out_ch"}
         },
     },
     mixer={
