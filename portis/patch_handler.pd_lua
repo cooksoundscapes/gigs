@@ -41,6 +41,21 @@ function patch_handler:in_1(sel, atoms)
     end
 end
 
+function patch_handler:in_1_list(atoms)
+    -- handles cltin messages packed in 3 atoms: level, controller & channel
+    if #atoms ~= 3 then return end
+
+    local mapping = self.instruments.midi_mapping[atoms[3]]
+    if mapping then
+        local param_ref = mapping[atoms[2]]
+        if param_ref then
+            local param = self:get_param(param_ref)
+            param.level = param.min + ((param.max - param.min) * (atoms[1] / 127))
+            self:send_param(param, param_ref)
+        end
+    end
+end
+
 function patch_handler:handle_encoders(atoms)
     if self.at_home_screen then
         return
@@ -50,37 +65,10 @@ function patch_handler:handle_encoders(atoms)
     local dir = atoms[2]
     local param_ref = self.instruments.pages[self.current_page][enc]
     if param_ref then
-        local param = self.instruments[param_ref[1]][param_ref[2]]
+        local param = self:get_param(param_ref)
         local incr = dir * param.res
         param.level = math.min(param.max, math.max(param.min, param.level + incr))
-
-        local send_value = param.level
-        if param.transform then
-            send_value = param.transform(param.level)
-        end
-
-        local sel = "float"
-        if param.path then
-            sel = param.path
-        elseif param.is_table then
-            sel = "list"
-        end
-
-        if param.is_table then
-            pd.send(param.send, sel, send_value)
-            pd.send("observer", "list", {param_ref[1], param_ref[2], table.unpack(send_value)})
-        else
-            pd.send(param.send, sel, {send_value})
-            pd.send("observer", "list", {param_ref[1], param_ref[2], send_value})
-        end
-
-        --manda no outlet 1 para send-osc (param) e concatena com param.path, exemplo:
-        -- param.send = wvtbl-vib, param.path = rate, osc_send = wvtbl-vib-rate
-        local osc_send = param.send
-        if param.path then
-            osc_send = osc_send .. "-" .. param.path
-        end
-        self:send_param_to_ui(osc_send, param.level)
+        self:send_param(param, param_ref)
     end
 end
 
@@ -122,4 +110,38 @@ end
 
 function patch_handler:send_param_to_ui(addr, value)
     self:outlet(1, addr, {value})
+end
+
+function patch_handler:get_param(ref)
+    return self.instruments[ref[1]][ref[2]]
+end
+
+function patch_handler:send_param(param, ref)
+    local send_value = param.level
+    if param.transform then
+        send_value = param.transform(param.level)
+    end
+
+    local sel = "float"
+    if param.path then
+        sel = param.path
+    elseif param.is_table then
+        sel = "list"
+    end
+
+    if param.is_table then
+        pd.send(param.send, sel, send_value)
+        pd.send("observer", "list", {ref[1], ref[2], table.unpack(send_value)})
+    else
+        pd.send(param.send, sel, {send_value})
+        pd.send("observer", "list", {ref[1], ref[2], send_value})
+    end
+
+    --manda no outlet 1 para send-osc (param) e concatena com param.path;
+    --exemplo: param.send = wvtbl-vib, param.path = rate, osc_send = wvtbl-vib-rate
+    local osc_send = param.send
+    if param.path then
+        osc_send = osc_send .. "-" .. param.path
+    end
+    self:send_param_to_ui(osc_send, param.level)
 end

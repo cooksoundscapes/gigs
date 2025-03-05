@@ -12,34 +12,29 @@ local instruments = {
             {"bells", "lpf_cutoff"}
         },
     },
-    mixer={
-        organ_out_ch={
-            level=5, --stereo
-            min=0,
-            max=5,
+    midi_mapping={
+        [33]={
+            [48]={"organ", "vol"},
+            [49]={"bells", "vol"},
+            [50]={"vox_fx", "vol"},
+            [55]={"vox_fx", "delay_lpf"},
+            [56]={"vox_fx", "dry"},
+        }
+    },
+    ac_gt={
+        vol={
+            level=0,
+            min=-100,
+            max=0,
             res=1,
-            send="organ-out-ch",
+            send="ac-gt"
         },
-        bells_out_ch={
-            level=5, --stereo
-            min=0,
-            max=5,
+        reverb={
+            level=0,
+            min=-100,
+            max=0,
             res=1,
-            send="bells-out-ch"
-        },
-        vox_out_ch={
-            level=5, --stereo
-            min=0,
-            max=5,
-            res=1,
-            send="vox-out-ch"
-        },
-        vox_in_ch={
-            level=1,
-            min=0,
-            max=4,
-            res=1,
-            send="vox-in-ch"
+            send="ac-gt-rv"
         }
     },
     organ={
@@ -51,17 +46,17 @@ local instruments = {
             send="organ",
         },
         hpf_cutoff={
-            level=4147.56,
-            min=10,
-            max=21000.0,
-            res=17.5,
+            level=108,
+            min=0,
+            max=136,
+            res=0.5,
             send="wvtbl-hpf"
         },
         lpf_cutoff={
-            level=10929.8,
-            min=10,
-            max=21000.0,
-            res=17.5,
+            level=124,
+            min=0,
+            max=136,
+            res=0.5,
             send="wvtbl-lpf"
         },
         overdrive={
@@ -114,10 +109,10 @@ local instruments = {
             send="bells",
         },
         lpf_cutoff={
-            level=2600,
-            min=10,
-            max=21000.0,
-            res=17.5,
+            level=96,
+            min=0,
+            max=136,
+            res=0.5,
             send="smp-synth-lpf"
         },
     },
@@ -129,26 +124,26 @@ local instruments = {
             res=1,
             send="vox",
         },
-        hpf_cutoff={
-            level=20,
-            min=10,
-            max=21000.0,
-            res=170.5,
-            send="vox-hpf"
+        dry={
+            level=0,
+            min=-100,
+            max=0,
+            res=1,
+            send="vox-dry",
         },
-        lpf_cutoff={
-            level=21000,
-            min=10,
-            max=21000.0,
-            res=170.5,
-            send="vox-lpf"
+        delay_lpf={
+            level=136,
+            min=0,
+            max=136,
+            res=0.5,
+            send="vox-delay-lpf"
         },
-        overdrive={
+        feedback={
             level=0, -- in dbs
             min=-100,
-            max=20,
+            max=0,
             res=1,
-            send="vox-drive"
+            send="vox-feedback"
         },
     }
 }
