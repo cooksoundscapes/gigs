@@ -1,5 +1,3 @@
-local patch_handler = pd.Class:new():register("patch_handler")
-
 local function string_split(inputstr, sep)
     if sep == nil then
         sep = "%s"
@@ -14,18 +12,42 @@ end
 local function prepare_path()
     local path = string_split(pd._pathnames.patch_handler, "/")
     table.remove(path, #path)
+    table.remove(path, #path)
     local this_path = "/" .. table.concat(path, "/") .. "/"
     package.path = this_path .. "?.lua;" .. package.path
 end
 
-function patch_handler:initialize()
+--[[
+Main handler for communicating the main pd patch with ecossystem.
+1st arguments needs to be the name of the project!
+
+handles incoming OSC messages:
+* /encoders
+* /seq-buttons
+* /nav-buttons
+* /system
+
+* Routes all parameter traffic to [receive observer] - non-existence of this receive logs errors
+* /nav-buttons/1 will send messages to [receive current-page]
+* /seq-buttons/N will send messages straight to [receive seq-buttons], without processing
+
+an instruments.lua should exist in the same path as the main.pd that holds this abstraction,
+as it will be loaded within this abstraction initialization.
+It can have either a MIDI mapping of controllers -> parameters and/or a mapping of the /encoders
+OSC endpoint. If the parameter path annotated at instruments.lua doesn't exist, it will also log errors.
+]]
+local patch_handler = pd.Class:new():register("patch_handler")
+
+
+function patch_handler:initialize(_, atoms)
     prepare_path()
-    self.instruments = require("instruments")
+
+    self.instruments = require(atoms[1] .. ".instruments")
     self.actions = {
-        ["encoders"]=function(atoms) self:handle_encoders(atoms) end,
-        ["seq-buttons"]=function(atoms) self:handle_seq_buttons(atoms) end,
-        ["nav-buttons"]=function(atoms) self:handle_nav_buttons(atoms) end,
-        ["system"]=function(atoms) self:handle_system_msg(atoms) end
+        ["encoders"]=function(args) self:handle_encoders(args) end,
+        ["seq-buttons"]=function(args) self:handle_seq_buttons(args) end,
+        ["nav-buttons"]=function(args) self:handle_nav_buttons(args) end,
+        ["system"]=function(args) self:handle_system_msg(args) end
     }
     self.inlets = 1
     self.outlets = 1
@@ -42,7 +64,7 @@ function patch_handler:in_1(sel, atoms)
 end
 
 function patch_handler:in_1_list(atoms)
-    -- handles cltin messages packed in 3 atoms: level, controller & channel
+    -- handles ctlin messages packed in 3 atoms: level, controller & channel
     if #atoms ~= 3 then return end
 
     local mapping = self.instruments.midi_mapping[atoms[3]]
@@ -62,11 +84,12 @@ function patch_handler:handle_encoders(atoms)
     end
 
     local enc = tonumber(atoms[1])
-    local dir = atoms[2]
+    local direction = atoms[2]
+    -- find param by order at instruments.pages!
     local param_ref = self.instruments.pages[self.current_page][enc]
     if param_ref then
         local param = self:get_param(param_ref)
-        local incr = dir * param.res
+        local incr = direction * param.res
         param.level = math.min(param.max, math.max(param.min, param.level + incr))
         self:send_param(param, param_ref)
     end
@@ -140,8 +163,12 @@ function patch_handler:send_param(param, ref)
     --manda no outlet 1 para send-osc (param) e concatena com param.path;
     --exemplo: param.send = wvtbl-vib, param.path = rate, osc_send = wvtbl-vib-rate
     local osc_send = param.send
+    local ui_value = param.level
     if param.path then
         osc_send = osc_send .. "-" .. param.path
     end
-    self:send_param_to_ui(osc_send, param.level)
+    if param.ui_transform then
+        ui_value = param.ui_transform(ui_value)
+    end
+    self:send_param_to_ui(osc_send, ui_value)
 end

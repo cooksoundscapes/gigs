@@ -1,3 +1,5 @@
+local types = require('_common.types')
+
 local instruments = {
     pages={
         {
@@ -22,65 +24,24 @@ local instruments = {
         }
     },
     ac_gt={
-        vol={
-            level=0,
-            min=-100,
-            max=0,
-            res=1,
-            send="ac-gt"
-        },
-        reverb={
-            level=0,
-            min=-100,
-            max=0,
-            res=1,
-            send="ac-gt-rv"
-        }
+        vol=types:volume({level=0, send="ac-gt"}),
+        reverb=types:volume({level=0, send="ac-gt-rv"}),
     },
     organ={
-        vol={
-            level=0,
-            min=-100,
-            max=0,
-            res=1,
-            send="organ",
-        },
-        hpf_cutoff={
-            level=108,
-            min=0,
-            max=136,
-            res=0.5,
-            send="wvtbl-hpf"
-        },
-        lpf_cutoff={
-            level=124,
-            min=0,
-            max=136,
-            res=0.5,
-            send="wvtbl-lpf"
-        },
-        overdrive={
-            level=-6, -- in dbs
-            min=-100,
-            max=20,
-            res=1,
-            send="wvtbl-drive"
-        },
-        vibrato_mix={
-            level=1,
-            max=100,
-            min=0,
-            res=1,
-            send="wvtbl-vib-mix",
-            transform=function(v) return v/100*2-1 end,
-        },
+        vol=types:volume({level=0, send="organ"}),
+        hpf_cutoff=types:freq_sweep({level=108, send="wvtbl-hpf"}),
+        lpf_cutoff=types:freq_sweep({level=124, send="wvtbl-lpf"}),
+        overdrive=types:volume({level=-6,  max=20, send="wvtbl-drive"}),
+        vibrato_mix=types:balance({level=50, send="wvtbl-vib-mix"}),
+        reverb=types:volume({level=-14, send="wvtbl-verb"}),
         vibrato_rate={
             level=8,
             min=.2,
             max=12,
             res=.1,
             send="wvtbl-vib",
-            path="rate"
+            path="rate",
+            suffix="Hz",
         },
         vibrato_range={
             level=3,
@@ -90,61 +51,19 @@ local instruments = {
             send="wvtbl-vib",
             path="range",
             transform=function(v) return {2, v} end,
-            is_table=true
-        },
-        reverb={
-            level=-14,
-            min=-100,
-            max=0,
-            res=1,
-            send="wvtbl-verb"
+            is_table=true,
+            suffix="ms",
         },
     },
     bells={
-        vol={
-            level=0,
-            min=-100,
-            max=0,
-            res=1,
-            send="bells",
-        },
-        lpf_cutoff={
-            level=96,
-            min=0,
-            max=136,
-            res=0.5,
-            send="smp-synth-lpf"
-        },
+        vol=types:volume({level=0, send="bells"}),
+        lpf_cutoff=types:freq_sweep({level=96, send="smp-synth-lpf"})
     },
     vox_fx={
-        vol={
-            level=0,
-            min=-100,
-            max=0,
-            res=1,
-            send="vox",
-        },
-        dry={
-            level=0,
-            min=-100,
-            max=0,
-            res=1,
-            send="vox-dry",
-        },
-        delay_lpf={
-            level=136,
-            min=0,
-            max=136,
-            res=0.5,
-            send="vox-delay-lpf"
-        },
-        feedback={
-            level=0, -- in dbs
-            min=-100,
-            max=0,
-            res=1,
-            send="vox-feedback"
-        },
+        vol=types:volume({level=0, send="vox"}),
+        dry=types:volume({level=0, send="vox-dry"}),
+        feedback=types:volume({level=0, send="vox-feedback"}),
+        delay_lpf=types:freq_sweep({level=136, send="vox-delay-lpf"}),
     }
 }
 
